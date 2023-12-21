@@ -586,18 +586,11 @@ api.modal.confirm = function (pMessage, pCallbackMethod, pCallbackParams, pIconT
       $(this).dequeue();
     });
   });
-
-  $("#modal-confirm").find("[name=cancel-confirm]").once("click", function () {
-    // Must wait for the async transition to finsh before invoking the callback function that may be a cascade confirm
-    $("#modal-confirm").modal('hide').delay(100).queue(function () {
-      // https://stackoverflow.com/questions/10860171/run-function-after-delay
-      if (pCancellationCallbackMethod != null) {
-        pCancellationCallbackMethod(pCancellationCallbackParams);
-        $(this).dequeue();
-      }
-    });
-  });
-
+  $("#modal-confirm").find("[name=cancel-confirm]").once("click", (function () {
+    $("#modal-confirm").modal("hide");
+    if (!pCancelMethod) return
+    pCancelMethod(pCancelParams);
+  }))
   $("#modal-confirm").modal("show");
 };
 
